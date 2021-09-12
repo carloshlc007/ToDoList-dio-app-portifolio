@@ -1,15 +1,17 @@
 package com.wolftiger.todolist.ui
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.wolftiger.todolist.databinding.ActivityAddTaskBinding
+import com.wolftiger.todolist.datasource.TaskDateSource
 import com.wolftiger.todolist.extensions.format
 import com.wolftiger.todolist.extensions.text
+import com.wolftiger.todolist.model.Task
 import java.util.*
-
 
 class AddTaskActivity : AppCompatActivity() {
 
@@ -40,9 +42,28 @@ class AddTaskActivity : AppCompatActivity() {
                 .build()
 
             timerPicker.addOnPositiveButtonClickListener{
-                binding.tilHour.text = "${timerPicker.hour}:${timerPicker.minute}"
+                val minute =    if (timerPicker.minute in 0..9) "0${timerPicker.minute}" else timerPicker.minute
+                val hour =      if (timerPicker.hour in 0..9) "0${timerPicker.hour}" else timerPicker.hour
+                binding.tilHour.text = "$hour:$minute"
             }
             timerPicker.show(supportFragmentManager, null)
+        }
+
+        binding.btnCancel.setOnClickListener {
+            finish()
+        }
+
+        binding.btnNewTask.setOnClickListener{
+
+            val task = Task(
+                title   = binding.tilTitle.text,
+                date    = binding.tilDate.text,
+                hour    = binding.tilHour.text
+            )
+            TaskDateSource.insertTask(task)
+
+            setResult(Activity.RESULT_OK)
+            finish()
         }
     }
 }

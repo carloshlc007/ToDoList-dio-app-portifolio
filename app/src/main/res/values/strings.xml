@@ -7,4 +7,6 @@
     <string name="tx_hora">Hora</string>
     <string name="tx_criar_tarefa">Criar Tarefa</string>
     <string name="str_tarefas">Tarefas</string>
+    <string name="delete">Deletar</string>
+    <string name="editar">Editar</string>
 </resources>
