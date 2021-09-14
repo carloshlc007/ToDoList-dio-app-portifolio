@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.wolftiger.todolist.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.rvTasks.adapter = adapter
+        updateList()
 
         insertListeners()
     }
@@ -25,26 +29,34 @@ class MainActivity : AppCompatActivity() {
     private fun insertListeners() {
         binding.fab.setOnClickListener{
             startActivityForResult(Intent(this, AddTaskActivity::class.java), CREATE_NEW_TASK)
+            updateList()
         }
 
         adapter.listnerEdit = {
-            Log.e("TAG", "listenerEdit$it")
+            val intent = Intent(this, AddTaskActivity::class.java )
+            intent.putExtra(AddTaskActivity.TASK_ID, it.id)
+            startActivityForResult(Intent(this, AddTaskActivity::class.java ), CREATE_NEW_TASK)
+            updateList()
         }
 
         adapter.listnerDelete = {
-            Log.e("TAG", "listenerDelete: $it" )
+            TaskDateSource.delete(it)
+            updateList()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == CREATE_NEW_TASK){
-            binding.rvTasks.adapter = adapter
-            adapter.submitList(TaskDateSource.getList())
-        }
+        if (requestCode == CREATE_NEW_TASK && resultCode == Activity.RESULT_OK)
+            updateList()
+    }
+
+    fun updateList(){
+        val list = TaskDateSource.getList()
+        adapter.submitList(list)
     }
 
     companion object{
-        private const val CREATE_NEW_TASK = 1000
+         private const val CREATE_NEW_TASK = 1000
     }
 }

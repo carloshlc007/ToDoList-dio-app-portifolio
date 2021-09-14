@@ -1,5 +1,6 @@
 package com.wolftiger.todolist.ui
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
@@ -28,9 +29,10 @@ class TaskListAdapter: ListAdapter<Task, TaskListAdapter.TaskViewHolder>(DiffCal
     inner class TaskViewHolder(
         private val binding: ItemTaskBinding)
         : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(item: Task) {
             binding.tvTitle.text = item.title
-            binding.tvDate.text = "${item.date} ${item.hour}"
+            binding.tvDate.text = "${item.date} as ${item.hour}"
             binding.ivMore.setOnClickListener{
                 showPopup(item)
             }
